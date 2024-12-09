@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Check;
 
 
 @Data
@@ -23,6 +24,7 @@ public class UserAccount {
     @NotNull
     @Size(min = 3, max = 50)
     @Column(nullable = false, unique = true)
+    @Check(constraints = "LENGTH(username) >= 3 AND LENGTH(username) <= 100")
     private String username;
 
     @NotNull

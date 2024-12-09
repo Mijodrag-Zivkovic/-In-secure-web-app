@@ -5,77 +5,24 @@ import com.News.News.models.UserAccount;
 import com.News.News.repositories.UserAccountRepository;
 
 import jakarta.validation.*;
+
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Optional;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @DisplayName("Repository Tests")
 public class UserAccountRepositoryTests {
 
-//    @Autowired
-//    private UserAccountRepository repository;
-//
-//    // Validator to check bean validation
-//    private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-//    private static final Validator validator = factory.getValidator();
-//
-//    @BeforeEach
-//    void resetDatabase() {
-//        repository.deleteAll(); // Clear the repository
-//        repository.flush();     // Ensure the database state is reset
-//    }
-//
-//    @Test
-//    @DisplayName("Create and Fetch User Account")
-//    void testCreateAndFetchUserAccount() {
-//        // Create a new UserAccount
-//        UserAccount user = new UserAccount("testuser", "password123", "test@example.com", Role.ADMIN, true);
-//        repository.save(user);
-//
-//        // Fetch the user by username
-//        Optional<UserAccount> fetchedUser = repository.findByUsername("testuser");
-//        assertThat(fetchedUser).isPresent();
-//        assertThat(fetchedUser.get().getEmail()).isEqualTo("test@example.com");
-//    }
-//
-//    @Test
-//    @DisplayName("Unique Email Constraint")
-//    void testUniqueEmail() {
-//        // Create two users with the same email
-//        UserAccount user1 = new UserAccount("user1", "password123", "duplicate@example.com", Role.ADMIN, true);
-//        UserAccount user2 = new UserAccount("user2", "password456", "duplicate@example.com", Role.ADMIN, true);
-//
-//        repository.save(user1);
-//
-//        // Try to save the second user and catch the exception
-//        assertThatThrownBy(() -> repository.save(user2))
-//                .hasMessageContaining("could not execute statement");
-//    }
-//
-//    @Test
-//    @DisplayName("Unique Username Constraint")
-//    void testUniqueUsername() {
-//        // Save first user
-//        UserAccount user1 = new UserAccount("testuser", "password123", "test@example.com", Role.ADMIN, true);
-//        repository.save(user1);
-//
-//        // Attempt to save second user with same username
-//        UserAccount user2 = new UserAccount("testuser", "password123", "another@example.com", Role.ADMIN, true);
-//
-//        assertThatThrownBy(() -> repository.save(user2))
-//                .hasMessageContaining("could not execute statement");
-//    }
     @Autowired
     private UserAccountRepository userAccountRepository;
+
+    @BeforeEach
+    void resetDatabase() {
+        userAccountRepository.deleteAll(); // Clear the repository
+        userAccountRepository.flush();     // Ensure the database state is reset
+    }
 
     @Test
     void shouldNotAllowNullUsername() {
