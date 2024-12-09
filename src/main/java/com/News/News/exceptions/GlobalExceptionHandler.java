@@ -6,18 +6,23 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<String> handleAppException(AppException ex) {
+    public ResponseEntity<Map<String, String>> handleAppException(AppException ex) {
         HttpStatus status;
         switch (ex.getErrorCode()) {
             case NOT_FOUND -> status = HttpStatus.NOT_FOUND;
             case CONFLICT -> status = HttpStatus.CONFLICT;
             default -> status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return ResponseEntity.status(status).body(ex.getMessage());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(status).body(response);
     }
 
 
