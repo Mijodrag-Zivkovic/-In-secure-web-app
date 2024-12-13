@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +31,7 @@ public class UserAccountServiceInsecureImpl implements UserAccountService {
             throw new AppException("Username already exists", ErrorCode.CONFLICT);
         }
         if (userAccountRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new AppException("Username already exists", ErrorCode.CONFLICT);
+            throw new AppException("Email already exists", ErrorCode.CONFLICT);
         }
 
         // Directly use the password from the request (vulnerability)
