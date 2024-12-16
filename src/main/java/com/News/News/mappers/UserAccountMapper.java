@@ -4,7 +4,9 @@ import com.News.News.dtos.UserAccountRequest;
 import com.News.News.dtos.UserAccountResponse;
 import com.News.News.models.Role;
 import com.News.News.models.UserAccount;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserAccountMapper {
 
     public static UserAccount toEntity(UserAccountRequest request) {

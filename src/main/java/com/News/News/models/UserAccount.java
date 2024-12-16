@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
