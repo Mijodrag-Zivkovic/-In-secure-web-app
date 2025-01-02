@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleResponseDTO {
-    private Long id;
+public class AdminArticleRequest {
+
     private String title;
     private String content;
     private Long writerId;
+
 }

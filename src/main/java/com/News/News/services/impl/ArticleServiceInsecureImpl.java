@@ -1,7 +1,7 @@
 package com.News.News.services.impl;
 
-import com.News.News.dtos.ArticleRequestDTO;
-import com.News.News.dtos.ArticleResponseDTO;
+import com.News.News.dtos.ArticleRequest;
+import com.News.News.dtos.ArticleResponse;
 import com.News.News.exceptions.AppException;
 import com.News.News.exceptions.ErrorCode;
 import com.News.News.mappers.ArticleMapper;
@@ -16,22 +16,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ArticleServiceImpl implements ArticleService {
+public class ArticleServiceInsecureImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
     private final UserAccountRepository userAccountRepository;
     private final ArticleMapper articleMapper;
 
-    public ArticleServiceImpl(ArticleRepository articleRepository,
-                              UserAccountRepository userAccountRepository,
-                              ArticleMapper articleMapper) {
+    public ArticleServiceInsecureImpl(ArticleRepository articleRepository,
+                                      UserAccountRepository userAccountRepository,
+                                      ArticleMapper articleMapper) {
         this.articleRepository = articleRepository;
         this.userAccountRepository = userAccountRepository;
         this.articleMapper = articleMapper;
     }
 
     @Override
-    public ArticleResponseDTO createArticle(ArticleRequestDTO requestDTO) {
+    public ArticleResponse createArticle(ArticleRequest requestDTO) {
         // Validate the user
         UserAccount user = userAccountRepository.findById(requestDTO.getWriterId())
                 .orElseThrow(() -> new AppException("User not found with ID: " + requestDTO.getWriterId(), ErrorCode.NOT_FOUND));
@@ -45,7 +45,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleResponseDTO getArticleById(Long id) {
+    public ArticleResponse getArticleById(Long id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new AppException("Article not found with ID: " + id, ErrorCode.NOT_FOUND));
 
@@ -58,7 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleResponseDTO> getAllArticles() {
+    public List<ArticleResponse> getAllArticles() {
         return articleRepository.findAll().stream()
                 .map(article -> {
                     String username = userAccountRepository.findById(article.getWriterId())
@@ -77,7 +77,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.deleteById(id);
     }
 
-    public ArticleResponseDTO updateArticle(Long id, ArticleRequestDTO requestDTO) {
+    public ArticleResponse updateArticle(Long id, ArticleRequest requestDTO) {
         // Find the existing article
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new AppException("Article not found with ID: " + id, ErrorCode.NOT_FOUND));

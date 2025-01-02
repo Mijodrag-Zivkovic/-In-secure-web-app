@@ -1,5 +1,6 @@
 package com.News.News.mappers;
 
+import com.News.News.dtos.AdminUserAccountRequest;
 import com.News.News.dtos.UserAccountRequest;
 import com.News.News.dtos.UserAccountResponse;
 import com.News.News.models.Role;
@@ -28,4 +29,15 @@ public class UserAccountMapper {
                 user.getIsEnabled()
         );
     }
+
+    public static UserAccount toEntity(AdminUserAccountRequest request) {
+        UserAccount user = new UserAccount();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword()); // Add encryption later!
+        user.setEmail(request.getEmail());
+        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
+        user.setIsEnabled(true); // Default to enabled
+        return user;
+    }
+
 }

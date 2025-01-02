@@ -1,12 +1,15 @@
 package com.News.News.services;
 
+
+import com.News.News.dtos.AdminArticleRequest;
 import com.News.News.dtos.ArticleRequest;
 import com.News.News.dtos.ArticleResponse;
 
 import java.util.List;
 
-public interface ArticleService {
-    ArticleResponse createArticle(ArticleRequest requestDTO);
+public interface AdminArticleService {
+
+    ArticleResponse createArticle(AdminArticleRequest requestDTO);
 
     ArticleResponse getArticleById(Long id);
 
@@ -14,5 +17,5 @@ public interface ArticleService {
 
     void deleteArticle(Long id);
 
-    ArticleResponse updateArticle(Long id, ArticleRequest requestDTO);
+    ArticleResponse updateArticle(Long id, AdminArticleRequest requestDTO);
 }
