@@ -1,4 +1,4 @@
-package com.News.News.services.impl;
+package com.News.News.services.impl.insecure;
 
 import com.News.News.dtos.ArticleRequest;
 import com.News.News.dtos.ArticleResponse;
@@ -10,11 +10,11 @@ import com.News.News.models.UserAccount;
 import com.News.News.repositories.ArticleRepository;
 import com.News.News.repositories.AccountRepository;
 import com.News.News.security.model.CustomAuthenticationToken;
-import com.News.News.security.model.CustomUserDetails;
 import com.News.News.security.services.JwtService;
 import com.News.News.services.ArticleService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,12 +25,13 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @AllArgsConstructor
+@Profile("insecure")
 public class ArticleServiceInsecureImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
     private final AccountRepository accountRepository;
     private final ArticleMapper articleMapper;
-    private final JwtService jwtService;
+
 
 
 //    public ArticleServiceInsecureImpl(ArticleRepository articleRepository,
@@ -79,10 +80,12 @@ public class ArticleServiceInsecureImpl implements ArticleService {
 
     @Override
     public void deleteArticle(Long id) {
-        if (!articleRepository.existsById(id)) {
-            throw new IllegalArgumentException("Article not found with ID: " + id);
-        }
-        articleRepository.deleteById(id);
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new AppException("Article not found with ID: " + id, ErrorCode.NOT_FOUND));
+        //if(isUserOwnerOfArticle(article)) {
+            articleRepository.delete(article);
+        //}
+        //else new AppException("You are not Article with ID: " + id, ErrorCode.NOT_FOUND));
     }
 
     public ArticleResponse updateArticle(Long id, ArticleRequest requestDTO) {
@@ -104,4 +107,13 @@ public class ArticleServiceInsecureImpl implements ArticleService {
         // Return the updated article as a response DTO
         return articleMapper.toResponseDTO(article);
     }
+
+//    boolean isUserOwnerOfArticle(Article article) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Long userId = ((CustomAuthenticationToken) authentication).getUserId();
+//        if(article.getWriterId().equals(userId)) {
+//            return true;
+//        }
+//        return false;
+//    }
 }

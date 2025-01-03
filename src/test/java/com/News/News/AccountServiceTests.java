@@ -7,7 +7,7 @@ import com.News.News.exceptions.ErrorCode;
 import com.News.News.models.Role;
 import com.News.News.models.UserAccount;
 import com.News.News.repositories.AccountRepository;
-import com.News.News.services.impl.AccountServiceInsecureImpl;
+import com.News.News.services.impl.insecure.AccountServiceInsecureImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

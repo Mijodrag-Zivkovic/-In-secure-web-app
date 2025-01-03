@@ -28,12 +28,28 @@ public class DataLoader implements CommandLineRunner {
         admin.setRole(Role.ADMIN);
         accountRepository.save(admin);
 
-        UserAccount writer = new UserAccount();
-        writer.setUsername("writer");
-        writer.setPassword("writerpass");
-        writer.setEmail("writer@articles.com");
-        writer.setRole(Role.WRITER);
-        accountRepository.save(writer);
+        for(int i = 1;i<=5;i++)
+        {
+            UserAccount writer = new UserAccount();
+            writer.setUsername("writer"+i);
+            writer.setPassword("writerpass"+i);
+            writer.setEmail("writer"+i+"@articles.com");
+            writer.setRole(Role.WRITER);
+            accountRepository.save(writer);
+
+            Article article1 = new Article();
+            article1.setTitle("Spring boot basics by " + writer.getUsername());
+            article1.setContent("Learn the basics of Spring Boot.");
+            article1.setWriterId(writer.getId());
+            articleRepository.save(article1);
+
+            Article article2 = new Article();
+            article2.setTitle("Understanding JWT by " + writer.getUsername());
+            article2.setContent("An introduction to JWT and how it works.");
+            article2.setWriterId(writer.getId());
+            articleRepository.save(article2);
+        }
+
 
         UserAccount reader = new UserAccount();
         reader.setUsername("reader");
@@ -43,17 +59,7 @@ public class DataLoader implements CommandLineRunner {
         accountRepository.save(reader);
 
         // Create and save articles
-        Article article1 = new Article();
-        article1.setTitle("Spring Boot Basics");
-        article1.setContent("Learn the basics of Spring Boot.");
-        article1.setWriterId(writer.getId());
-        articleRepository.save(article1);
 
-        Article article2 = new Article();
-        article2.setTitle("Understanding JWT");
-        article2.setContent("An introduction to JWT and how it works.");
-        article2.setWriterId(writer.getId());
-        articleRepository.save(article2);
 
         System.out.println("Sample users and articles loaded.");
     }

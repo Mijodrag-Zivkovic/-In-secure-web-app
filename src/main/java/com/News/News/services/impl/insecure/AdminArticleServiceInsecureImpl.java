@@ -1,4 +1,4 @@
-package com.News.News.services.impl;
+package com.News.News.services.impl.insecure;
 
 import com.News.News.dtos.AdminArticleRequest;
 import com.News.News.dtos.ArticleResponse;

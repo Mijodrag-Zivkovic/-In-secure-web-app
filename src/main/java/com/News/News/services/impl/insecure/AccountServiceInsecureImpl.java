@@ -1,7 +1,5 @@
-package com.News.News.services.impl;
+package com.News.News.services.impl.insecure;
 
-import com.News.News.dtos.AdminAccountRequest;
-import com.News.News.dtos.AdminAccountResponse;
 import com.News.News.dtos.AccountRequest;
 import com.News.News.dtos.AccountResponse;
 import com.News.News.exceptions.AppException;
@@ -10,24 +8,24 @@ import com.News.News.mappers.AccountMapper;
 import com.News.News.models.Role;
 import com.News.News.models.UserAccount;
 import com.News.News.repositories.AccountRepository;
-import com.News.News.services.AdminAccountService;
+import com.News.News.services.AccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Service
 @RequiredArgsConstructor
 @Transactional
-@Service
-public class AdminAccountServiceInsecureImpl implements AdminAccountService {
+public class AccountServiceInsecureImpl implements AccountService {
 
     private final AccountRepository accountRepository;
 
     @Override
-    public AdminAccountResponse createUser(AdminAccountRequest request) {
+    public AccountResponse createUser(AccountRequest request) {
         if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new AppException("Username already exists", ErrorCode.CONFLICT);
         }
@@ -38,27 +36,27 @@ public class AdminAccountServiceInsecureImpl implements AdminAccountService {
         // Directly use the password from the request (vulnerability)
         UserAccount user = AccountMapper.toEntity(request);
         UserAccount savedUser = accountRepository.save(user);
-        return AccountMapper.toAdminResponse(savedUser);
+        return AccountMapper.toResponse(savedUser);
     }
 
     @Override
-    public AdminAccountResponse getUserById(Long id) {
+    public AccountResponse getUserById(Long id) {
         UserAccount user = accountRepository.findById(id)
                 .orElseThrow(() -> new AppException("User not found with ID: " + id, ErrorCode.NOT_FOUND));
-        return AccountMapper.toAdminResponse(user);
+        return AccountMapper.toResponse(user);
     }
 
     @Override
-    public AdminAccountResponse getUserByUsername(String username) {
+    public AccountResponse getUserByUsername(String username) {
         UserAccount user = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException("User not found with username: " + username, ErrorCode.NOT_FOUND));
-        return AccountMapper.toAdminResponse(user);
+        return AccountMapper.toResponse(user);
     }
 
     @Override
-    public List<AdminAccountResponse> getAllUsers() {
+    public List<AccountResponse> getAllUsers() {
         List<UserAccount> users = accountRepository.findAll();
-        return users.stream().map(AccountMapper::toAdminResponse).collect(Collectors.toList());
+        return users.stream().map(AccountMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -70,7 +68,7 @@ public class AdminAccountServiceInsecureImpl implements AdminAccountService {
     }
 
     @Override
-    public AdminAccountResponse updateUser(Long id, AdminAccountRequest request) {
+    public AccountResponse updateUser(Long id, AccountRequest request) {
         UserAccount user = accountRepository.findById(id)
                 .orElseThrow(() -> new AppException("User not found with ID: " + id, ErrorCode.NOT_FOUND));
 
@@ -91,6 +89,6 @@ public class AdminAccountServiceInsecureImpl implements AdminAccountService {
         user.setRole(Role.valueOf(request.getRole().toUpperCase()));
 
         UserAccount updatedUser = accountRepository.save(user);
-        return AccountMapper.toAdminResponse(updatedUser);
+        return AccountMapper.toResponse(updatedUser);
     }
 }
