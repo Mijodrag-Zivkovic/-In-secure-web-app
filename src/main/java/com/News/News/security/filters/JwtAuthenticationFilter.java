@@ -1,5 +1,7 @@
 package com.News.News.security.filters;
 
+import com.News.News.security.model.CustomAuthenticationToken;
+import com.News.News.security.model.CustomUserDetails;
 import com.News.News.security.services.JwtService;
 import com.News.News.security.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
@@ -40,10 +42,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
+            Long userId = null;
+            if (userDetails instanceof CustomUserDetails) {
+                userId = ((CustomUserDetails) userDetails).getUserId(); // Extract userId
+            }
             if (jwtService.isTokenValid(jwt)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+//                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+//                        userDetails, null, userDetails.getAuthorities());
+                CustomAuthenticationToken authentication = new CustomAuthenticationToken(
+                        userDetails, null, userId, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

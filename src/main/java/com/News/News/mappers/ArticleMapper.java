@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArticleMapper {
 
-    public Article toEntity(ArticleRequest dto) {
-        return new Article(dto.getTitle(), dto.getContent(), dto.getWriterId());
+    public Article toEntity(ArticleRequest dto, Long articleId) {
+        return new Article(dto.getTitle(), dto.getContent(), articleId);
     }
 
     // Convert Article entity to ArticleResponseDTO

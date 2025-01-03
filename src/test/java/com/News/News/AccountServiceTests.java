@@ -1,24 +1,19 @@
 package com.News.News;
 
-import com.News.News.dtos.UserAccountRequest;
-import com.News.News.dtos.UserAccountResponse;
+import com.News.News.dtos.AccountRequest;
+import com.News.News.dtos.AccountResponse;
 import com.News.News.exceptions.AppException;
 import com.News.News.exceptions.ErrorCode;
 import com.News.News.models.Role;
 import com.News.News.models.UserAccount;
-import com.News.News.repositories.UserAccountRepository;
-import com.News.News.services.impl.UserAccountServiceInsecureImpl;
+import com.News.News.repositories.AccountRepository;
+import com.News.News.services.impl.AccountServiceInsecureImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +22,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-public class UserAccountServiceTests {
+public class AccountServiceTests {
 
     @MockBean
-    private UserAccountRepository userAccountRepository;
+    private AccountRepository accountRepository;
 
     //@InjectMocks
     @Autowired
-    private UserAccountServiceInsecureImpl userAccountService;
+    private AccountServiceInsecureImpl userAccountService;
 
     private UserAccount userAccount;
 
@@ -49,7 +44,7 @@ public class UserAccountServiceTests {
     void testGetUserById_UserNotFound() {
         // Given
         Long userId = 1L;
-        Mockito.when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+        Mockito.when(accountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
         AppException thrown = assertThrows(AppException.class, () -> userAccountService.getUserById(userId));
@@ -60,11 +55,11 @@ public class UserAccountServiceTests {
     @Test
     void testCreateUser_Success() {
         // Given
-        UserAccountRequest request = new UserAccountRequest("newuser", "password123", "new@example.com", "READER");
-        Mockito.when(userAccountRepository.save(Mockito.any(UserAccount.class))).thenReturn(userAccount);
+        AccountRequest request = new AccountRequest("newuser", "password123", "new@example.com", "READER");
+        Mockito.when(accountRepository.save(Mockito.any(UserAccount.class))).thenReturn(userAccount);
 
         // When
-        UserAccountResponse response = userAccountService.createUser(request);
+        AccountResponse response = userAccountService.createUser(request);
 
         // Then
         assertNotNull(response);
@@ -74,8 +69,8 @@ public class UserAccountServiceTests {
     @Test
     void testCreateUser_UsernameAlreadyExists() {
         // Given
-        UserAccountRequest request = new UserAccountRequest("testuser", "password123", "test@example.com", "READER");
-        Mockito.when(userAccountRepository.findByUsername(request.getUsername())).thenReturn(Optional.of(userAccount));
+        AccountRequest request = new AccountRequest("testuser", "password123", "test@example.com", "READER");
+        Mockito.when(accountRepository.findByUsername(request.getUsername())).thenReturn(Optional.of(userAccount));
 
         // When & Then
         AppException thrown = assertThrows(AppException.class, () -> userAccountService.createUser(request));
@@ -87,20 +82,20 @@ public class UserAccountServiceTests {
     void testDeleteUser_Success() {
         // Given
         Long userId = 1L;
-        Mockito.when(userAccountRepository.existsById(userId)).thenReturn(true);
+        Mockito.when(accountRepository.existsById(userId)).thenReturn(true);
 
         // When
         userAccountService.deleteUser(userId);
 
         // Then
-        Mockito.verify(userAccountRepository).deleteById(userId);
+        Mockito.verify(accountRepository).deleteById(userId);
     }
 
     @Test
     void testDeleteUser_UserNotFound() {
         // Given
         Long userId = 1L;
-        Mockito.when(userAccountRepository.existsById(userId)).thenReturn(false);
+        Mockito.when(accountRepository.existsById(userId)).thenReturn(false);
 
         // When & Then
         AppException thrown = assertThrows(AppException.class, () -> userAccountService.deleteUser(userId));
@@ -112,12 +107,12 @@ public class UserAccountServiceTests {
     void testUpdateUser_Success() {
         // Given
         Long userId = 1L;
-        UserAccountRequest request = new UserAccountRequest("updateduser", "newpassword123", "updated@example.com", "ADMIN");
-        Mockito.when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
-        Mockito.when(userAccountRepository.save(Mockito.any(UserAccount.class))).thenReturn(userAccount);
+        AccountRequest request = new AccountRequest("updateduser", "newpassword123", "updated@example.com", "ADMIN");
+        Mockito.when(accountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        Mockito.when(accountRepository.save(Mockito.any(UserAccount.class))).thenReturn(userAccount);
 
         // When
-        UserAccountResponse response = userAccountService.updateUser(userId, request);
+        AccountResponse response = userAccountService.updateUser(userId, request);
 
         // Then
         assertNotNull(response);
@@ -129,8 +124,8 @@ public class UserAccountServiceTests {
     void testUpdateUser_UserNotFound() {
         // Given
         Long userId = 1L;
-        UserAccountRequest request = new UserAccountRequest("updateduser", "newpassword123", "updated@example.com", "ADMIN");
-        Mockito.when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+        AccountRequest request = new AccountRequest("updateduser", "newpassword123", "updated@example.com", "ADMIN");
+        Mockito.when(accountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // When & Then
         AppException thrown = assertThrows(AppException.class, () -> userAccountService.updateUser(userId, request));
@@ -142,10 +137,10 @@ public class UserAccountServiceTests {
     void testGetAllUsers_Success() {
         // Given
         List<UserAccount> users = List.of(userAccount);
-        Mockito.when(userAccountRepository.findAll()).thenReturn(users);
+        Mockito.when(accountRepository.findAll()).thenReturn(users);
 
         // When
-        List<UserAccountResponse> responseList = userAccountService.getAllUsers();
+        List<AccountResponse> responseList = userAccountService.getAllUsers();
 
         // Then
         assertNotNull(responseList);

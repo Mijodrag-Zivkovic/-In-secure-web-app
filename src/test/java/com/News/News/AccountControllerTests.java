@@ -1,11 +1,11 @@
 package com.News.News;
 
-import com.News.News.controllers.UserAccountController;
-import com.News.News.dtos.UserAccountRequest;
-import com.News.News.dtos.UserAccountResponse;
+import com.News.News.controllers.AccountController;
+import com.News.News.dtos.AccountRequest;
+import com.News.News.dtos.AccountResponse;
 import com.News.News.exceptions.AppException;
 import com.News.News.exceptions.ErrorCode;
-import com.News.News.services.UserAccountService;
+import com.News.News.services.AccountService;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,10 +17,7 @@ import org.springframework.http.MediaType;
 
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.List;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,14 +26,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(UserAccountController.class)
-public class UserAccountControllerTests {
+@WebMvcTest(AccountController.class)
+public class AccountControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private UserAccountService userAccountService;
+    private AccountService accountService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -44,8 +41,8 @@ public class UserAccountControllerTests {
     void testGetUserById_Success() throws Exception {
         // Given
         Long userId = 1L;
-        UserAccountResponse response = new UserAccountResponse(1L, "john_doe", "john@example.com", "ADMIN", true);
-        Mockito.when(userAccountService.getUserById(userId)).thenReturn(response);
+        AccountResponse response = new AccountResponse(1L, "john_doe", "john@example.com", "ADMIN", true);
+        Mockito.when(accountService.getUserById(userId)).thenReturn(response);
 
         // When & Then
         mockMvc.perform(get("/accounts/{id}", userId)
@@ -61,7 +58,7 @@ public class UserAccountControllerTests {
     void testGetUserById_NotFound() throws Exception {
         // Given
         Long userId = 1L;
-        Mockito.when(userAccountService.getUserById(userId)).thenThrow(new AppException("User not found", ErrorCode.NOT_FOUND));
+        Mockito.when(accountService.getUserById(userId)).thenThrow(new AppException("User not found", ErrorCode.NOT_FOUND));
 
         // When & Then
         mockMvc.perform(get("/accounts/{id}", userId)
@@ -73,9 +70,9 @@ public class UserAccountControllerTests {
     @Test
     void testCreateUser_Success() throws Exception {
         // Given
-        UserAccountRequest request = new UserAccountRequest("newuser", "password123", "new@example.com", "READER");
-        UserAccountResponse response = new UserAccountResponse(1L, "newuser", "new@example.com", "READER", true);
-        Mockito.when(userAccountService.createUser(Mockito.any(UserAccountRequest.class))).thenReturn(response);
+        AccountRequest request = new AccountRequest("newuser", "password123", "new@example.com", "READER");
+        AccountResponse response = new AccountResponse(1L, "newuser", "new@example.com", "READER", true);
+        Mockito.when(accountService.createUser(Mockito.any(AccountRequest.class))).thenReturn(response);
 
         // When & Then
         mockMvc.perform(post("/accounts")
@@ -91,8 +88,8 @@ public class UserAccountControllerTests {
     @Test
     void testCreateUser_UsernameAlreadyExists() throws Exception {
         // Given
-        UserAccountRequest request = new UserAccountRequest("existinguser", "password123", "existing@example.com", "READER");
-        Mockito.when(userAccountService.createUser(Mockito.any(UserAccountRequest.class)))
+        AccountRequest request = new AccountRequest("existinguser", "password123", "existing@example.com", "READER");
+        Mockito.when(accountService.createUser(Mockito.any(AccountRequest.class)))
                 .thenThrow(new AppException("Username already exists", ErrorCode.CONFLICT));
 
         // When & Then
@@ -107,8 +104,8 @@ public class UserAccountControllerTests {
     void testSearchUsersByUsername_Success() throws Exception {
         // Given
         String username = "john";
-        UserAccountResponse response = new UserAccountResponse(1L, "john", "john@example.com", "ADMIN", true);
-        Mockito.when(userAccountService.getUserByUsername(username)).thenReturn(response);
+        AccountResponse response = new AccountResponse(1L, "john", "john@example.com", "ADMIN", true);
+        Mockito.when(accountService.getUserByUsername(username)).thenReturn(response);
 
         // When & Then
         mockMvc.perform(get("/accounts/search")
@@ -122,7 +119,7 @@ public class UserAccountControllerTests {
     void testSearchUsersByUsername_NoResults() throws Exception {
         // Given
         String username = "nonexistent";
-        Mockito.when(userAccountService.getUserByUsername(username))
+        Mockito.when(accountService.getUserByUsername(username))
                 .thenThrow(new AppException("No users found with username containing: " + username, ErrorCode.NOT_FOUND));
 
         // When & Then

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserAccountRequest {
+public class AdminAccountRequest {
 
     @NotNull
     @Size(min = 3, max = 50)
@@ -28,6 +28,5 @@ public class UserAccountRequest {
 
     @NotNull
     private String role;
-
 
 }

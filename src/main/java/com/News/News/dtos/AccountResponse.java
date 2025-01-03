@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserAccountResponse {
+public class AccountResponse {
 
     private Long id;
     private String username;

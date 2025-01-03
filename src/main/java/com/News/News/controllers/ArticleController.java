@@ -21,7 +21,7 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'WRITER')")
+    @PreAuthorize("hasRole('WRITER')")
     @PostMapping
     public ResponseEntity<ArticleResponse> createArticle(@RequestBody @Valid ArticleRequest requestDTO) {
         ArticleResponse responseDTO = articleService.createArticle(requestDTO);
@@ -40,14 +40,14 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'WRITER')")
+    @PreAuthorize("hasRole('WRITER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
         articleService.deleteArticle(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'WRITER')")
+    @PreAuthorize("hasRole('WRITER')")
     @PutMapping("/{id}")
     public ResponseEntity<ArticleResponse> updateArticle(
             @PathVariable Long id,

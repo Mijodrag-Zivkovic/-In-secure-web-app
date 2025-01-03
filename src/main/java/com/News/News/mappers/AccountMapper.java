@@ -1,16 +1,17 @@
 package com.News.News.mappers;
 
-import com.News.News.dtos.AdminUserAccountRequest;
-import com.News.News.dtos.UserAccountRequest;
-import com.News.News.dtos.UserAccountResponse;
+import com.News.News.dtos.AdminAccountRequest;
+import com.News.News.dtos.AdminAccountResponse;
+import com.News.News.dtos.AccountRequest;
+import com.News.News.dtos.AccountResponse;
 import com.News.News.models.Role;
 import com.News.News.models.UserAccount;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserAccountMapper {
+public class AccountMapper {
 
-    public static UserAccount toEntity(UserAccountRequest request) {
+    public static UserAccount toEntity(AccountRequest request) {
         UserAccount user = new UserAccount();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword()); // Add encryption later!
@@ -20,8 +21,8 @@ public class UserAccountMapper {
         return user;
     }
 
-    public static UserAccountResponse toResponse(UserAccount user) {
-        return new UserAccountResponse(
+    public static AccountResponse toResponse(UserAccount user) {
+        return new AccountResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
@@ -30,7 +31,7 @@ public class UserAccountMapper {
         );
     }
 
-    public static UserAccount toEntity(AdminUserAccountRequest request) {
+    public static UserAccount toEntity(AdminAccountRequest request) {
         UserAccount user = new UserAccount();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword()); // Add encryption later!
@@ -40,4 +41,13 @@ public class UserAccountMapper {
         return user;
     }
 
+    public static AdminAccountResponse toAdminResponse(UserAccount user) {
+        return new AdminAccountResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole().toString(),
+                user.getIsEnabled()
+        );
+    }
 }

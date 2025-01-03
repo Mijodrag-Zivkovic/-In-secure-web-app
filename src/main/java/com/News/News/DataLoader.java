@@ -4,7 +4,7 @@ import com.News.News.models.Article;
 import com.News.News.models.Role;
 import com.News.News.models.UserAccount;
 import com.News.News.repositories.ArticleRepository;
-import com.News.News.repositories.UserAccountRepository;
+import com.News.News.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements CommandLineRunner {
 
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -26,21 +26,21 @@ public class DataLoader implements CommandLineRunner {
         admin.setPassword("adminpass");
         admin.setEmail("admin@articles.com");// "{noop}" for unencoded passwords
         admin.setRole(Role.ADMIN);
-        userAccountRepository.save(admin);
+        accountRepository.save(admin);
 
         UserAccount writer = new UserAccount();
         writer.setUsername("writer");
         writer.setPassword("writerpass");
         writer.setEmail("writer@articles.com");
         writer.setRole(Role.WRITER);
-        userAccountRepository.save(writer);
+        accountRepository.save(writer);
 
         UserAccount reader = new UserAccount();
         reader.setUsername("reader");
         reader.setPassword("readerpass");
         reader.setEmail("reader@articles.com");
         reader.setRole(Role.READER);
-        userAccountRepository.save(reader);
+        accountRepository.save(reader);
 
         // Create and save articles
         Article article1 = new Article();

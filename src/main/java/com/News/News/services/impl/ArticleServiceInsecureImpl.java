@@ -8,39 +8,47 @@ import com.News.News.mappers.ArticleMapper;
 import com.News.News.models.Article;
 import com.News.News.models.UserAccount;
 import com.News.News.repositories.ArticleRepository;
-import com.News.News.repositories.UserAccountRepository;
+import com.News.News.repositories.AccountRepository;
+import com.News.News.security.model.CustomAuthenticationToken;
+import com.News.News.security.model.CustomUserDetails;
+import com.News.News.security.services.JwtService;
 import com.News.News.services.ArticleService;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
+@AllArgsConstructor
 public class ArticleServiceInsecureImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final UserAccountRepository userAccountRepository;
+    private final AccountRepository accountRepository;
     private final ArticleMapper articleMapper;
+    private final JwtService jwtService;
 
-    public ArticleServiceInsecureImpl(ArticleRepository articleRepository,
-                                      UserAccountRepository userAccountRepository,
-                                      ArticleMapper articleMapper) {
-        this.articleRepository = articleRepository;
-        this.userAccountRepository = userAccountRepository;
-        this.articleMapper = articleMapper;
-    }
+
+//    public ArticleServiceInsecureImpl(ArticleRepository articleRepository,
+//                                      AccountRepository accountRepository,
+//                                      ArticleMapper articleMapper) {
+//        this.articleRepository = articleRepository;
+//        this.accountRepository = accountRepository;
+//        this.articleMapper = articleMapper;
+//    }
 
     @Override
     public ArticleResponse createArticle(ArticleRequest requestDTO) {
-        // Validate the user
-        UserAccount user = userAccountRepository.findById(requestDTO.getWriterId())
-                .orElseThrow(() -> new AppException("User not found with ID: " + requestDTO.getWriterId(), ErrorCode.NOT_FOUND));
-
-        // Map DTO to entity and save
-        Article article = articleMapper.toEntity(requestDTO);
+//        UserAccount user = accountRepository.findById(requestDTO.getWriterId())
+//                .orElseThrow(() -> new AppException("User not found with ID: " + requestDTO.getWriterId(), ErrorCode.NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((CustomAuthenticationToken) authentication).getUserId();
+        Article article = articleMapper.toEntity(requestDTO, userId);
         article = articleRepository.save(article);
-
-        // Map entity to response DTO
         return articleMapper.toResponseDTO(article);
     }
 
@@ -50,7 +58,7 @@ public class ArticleServiceInsecureImpl implements ArticleService {
                 .orElseThrow(() -> new AppException("Article not found with ID: " + id, ErrorCode.NOT_FOUND));
 
         // Fetch username
-        String username = userAccountRepository.findById(article.getWriterId())
+        String username = accountRepository.findById(article.getWriterId())
                 .map(UserAccount::getUsername)
                 .orElse("Unknown User");
 
@@ -61,7 +69,7 @@ public class ArticleServiceInsecureImpl implements ArticleService {
     public List<ArticleResponse> getAllArticles() {
         return articleRepository.findAll().stream()
                 .map(article -> {
-                    String username = userAccountRepository.findById(article.getWriterId())
+                    String username = accountRepository.findById(article.getWriterId())
                             .map(UserAccount::getUsername)
                             .orElse("Unknown User");
                     return articleMapper.toResponseDTO(article);
@@ -83,13 +91,12 @@ public class ArticleServiceInsecureImpl implements ArticleService {
                 .orElseThrow(() -> new AppException("Article not found with ID: " + id, ErrorCode.NOT_FOUND));
 
         // Validate the user
-        UserAccount user = userAccountRepository.findById(requestDTO.getWriterId())
-                .orElseThrow(() -> new AppException("User not found with ID: " + requestDTO.getWriterId(), ErrorCode.NOT_FOUND));
+//        UserAccount user = accountRepository.findById(writerId)
+//                .orElseThrow(() -> new AppException("User not found with ID: " + writerId, ErrorCode.NOT_FOUND));
 
         // Update the article fields
         article.setTitle(requestDTO.getTitle());
         article.setContent(requestDTO.getContent());
-        article.setWriterId(requestDTO.getWriterId());
 
         // Save the updated article
         article = articleRepository.save(article);

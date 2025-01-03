@@ -1,10 +1,13 @@
 package com.News.News.security.services;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -22,12 +25,11 @@ public class JwtService {
 
     private final long expiration = 3600000;
 
-    public String generateToken(String username, List<String> authorities) {
+    public String generateToken(String username, Long userId, List<String> authorities) {
         Map<String, Object> claims = new HashMap<>();
         //claims.put("username", username);
-        claims.put("roles", authorities.get(0));
-        int index = authorities.get(1).lastIndexOf("_");
-        claims.put("id", authorities.get(1).substring(index+1));
+        claims.put("roles", authorities.getFirst());
+        claims.put("id", userId);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -56,4 +58,5 @@ public class JwtService {
     public String getUsernameFromToken(String token) {
         return getClaimsFromToken(token).getSubject();
     }
+
 }
