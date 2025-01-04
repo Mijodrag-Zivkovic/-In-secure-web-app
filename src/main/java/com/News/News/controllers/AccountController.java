@@ -64,6 +64,12 @@ public class AccountController {
         List<AccountResponse> articles = accountService.searchUser(keyword);
         return ResponseEntity.ok(articles);
     }
+
+    @GetMapping("/passwordrecovery")
+    public ResponseEntity<String> recoverPassword(String username){
+        //account service call that would take email for username and send recovery email
+        return ResponseEntity.ok("Recovery email sent successfully");
+    }
 //    @PreAuthorize("isAuthenticated()")
 //    @GetMapping
 //    public ResponseEntity<List<AccountResponse>> getAllUsers() {
