@@ -7,6 +7,7 @@ import com.News.News.repositories.ArticleRepository;
 import com.News.News.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,12 +19,15 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
         // Create and save users
         UserAccount admin = new UserAccount();
         admin.setUsername("admin");
-        admin.setPassword("adminpass");
+        admin.setPassword(passwordEncoder.encode("adminpass"));
         admin.setEmail("admin@articles.com");// "{noop}" for unencoded passwords
         admin.setRole(Role.ADMIN);
         accountRepository.save(admin);
@@ -32,7 +36,8 @@ public class DataLoader implements CommandLineRunner {
         {
             UserAccount writer = new UserAccount();
             writer.setUsername("writer"+i);
-            writer.setPassword("writerpass"+i);
+            //writer.setPassword("writerpass"+i);
+            writer.setPassword(passwordEncoder.encode("writerpass"+i));
             writer.setEmail("writer"+i+"@articles.com");
             writer.setRole(Role.WRITER);
             accountRepository.save(writer);
@@ -53,7 +58,7 @@ public class DataLoader implements CommandLineRunner {
 
         UserAccount reader = new UserAccount();
         reader.setUsername("reader");
-        reader.setPassword("readerpass");
+        reader.setPassword(passwordEncoder.encode("readerpass"));
         reader.setEmail("reader@articles.com");
         reader.setRole(Role.READER);
         accountRepository.save(reader);

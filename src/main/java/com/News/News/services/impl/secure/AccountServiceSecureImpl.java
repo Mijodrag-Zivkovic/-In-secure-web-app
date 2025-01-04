@@ -1,12 +1,10 @@
-package com.News.News.services.impl.insecure;
+package com.News.News.services.impl.secure;
 
 import com.News.News.dtos.AccountRequest;
 import com.News.News.dtos.AccountResponse;
 import com.News.News.exceptions.AppException;
 import com.News.News.exceptions.ErrorCode;
 import com.News.News.mappers.AccountMapper;
-import com.News.News.models.Article;
-import com.News.News.models.Role;
 import com.News.News.models.UserAccount;
 import com.News.News.repositories.AccountRepository;
 import com.News.News.security.model.CustomAuthenticationToken;
@@ -22,15 +20,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Profile("insecure")
-public class AccountServiceInsecureImpl implements AccountService {
+@Profile("secure")
+public class AccountServiceSecureImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final EntityManager entityManager;
@@ -112,25 +109,25 @@ public class AccountServiceInsecureImpl implements AccountService {
 
     @Override
     public List<AccountResponse> searchUser(String keyword) {
-        String query = "SELECT * FROM user_accounts WHERE username LIKE '%" + keyword + "%' and role = 'READER'";
-        System.out.println(keyword);
-        System.out.println(query);
-        List<UserAccount> foundArticles = entityManager.createNativeQuery(query, UserAccount.class).getResultList();
-
-        List<AccountResponse> accounts = new ArrayList<>();
-        try{
-            accounts= foundArticles.stream()
-                    .map(AccountMapper::toResponse)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-        return accounts;
-//        List<UserAccount> users = accountRepository.searchAccounts(keyword);
-//        System.out.println(users);
-//        return users.stream().map(AccountMapper::toResponse).collect(Collectors.toList());
+//        String query = "SELECT * FROM user_accounts WHERE username LIKE '%" + keyword + "%' and role = 'READER'";
+//        System.out.println(keyword);
+//        System.out.println(query);
+//        List<UserAccount> foundArticles = entityManager.createNativeQuery(query, UserAccount.class).getResultList();
+//
+//        List<AccountResponse> accounts = new ArrayList<>();
+//        try{
+//            accounts= foundArticles.stream()
+//                    .map(AccountMapper::toResponse)
+//                    .collect(Collectors.toList());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//
+//        return accounts;
+        List<UserAccount> users = accountRepository.searchAccounts(keyword);
+        //System.out.println(users);
+        return users.stream().map(AccountMapper::toResponse).collect(Collectors.toList());
     }
 
 

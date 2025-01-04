@@ -26,8 +26,5 @@ public class AccountRequest {
     @Email
     private String email;
 
-    @NotNull
-    private String role;
-
 
 }

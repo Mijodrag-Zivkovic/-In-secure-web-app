@@ -16,7 +16,7 @@ public class AccountMapper {
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword()); // Add encryption later!
         user.setEmail(request.getEmail());
-        user.setRole(Role.valueOf(request.getRole().toUpperCase()));
+        user.setRole(Role.READER);
         user.setIsEnabled(true); // Default to enabled
         return user;
     }

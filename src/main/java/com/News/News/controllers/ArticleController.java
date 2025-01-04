@@ -40,6 +40,13 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ArticleResponse>> searchArticles(@RequestParam String keyword) {
+        List<ArticleResponse> articles = articleService.searchArticles(keyword);
+        return ResponseEntity.ok(articles);
+    }
+
+
     @PreAuthorize("hasRole('WRITER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {

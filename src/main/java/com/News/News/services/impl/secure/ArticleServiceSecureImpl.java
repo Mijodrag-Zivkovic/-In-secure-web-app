@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,13 +53,13 @@ public class ArticleServiceSecureImpl implements ArticleService {
     @Override
     public List<ArticleResponse> getAllArticles() {
         return articleRepository.findAll().stream()
-                .map(article -> {
-                    String username = accountRepository.findById(article.getWriterId())
-                            .map(UserAccount::getUsername)
-                            .orElse("Unknown User");
-                    return articleMapper.toResponseDTO(article);
-                })
+                .map(articleMapper::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ArticleResponse> searchArticles(String keyword) {
+        return new ArrayList<>();
     }
 
     @Override

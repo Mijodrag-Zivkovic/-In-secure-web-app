@@ -4,6 +4,7 @@ import com.News.News.dtos.ArticleRequest;
 import com.News.News.dtos.ArticleResponse;
 import com.News.News.exceptions.AppException;
 import com.News.News.exceptions.ErrorCode;
+import com.News.News.mappers.AccountMapper;
 import com.News.News.mappers.ArticleMapper;
 import com.News.News.models.Article;
 import com.News.News.models.UserAccount;
@@ -12,6 +13,7 @@ import com.News.News.repositories.AccountRepository;
 import com.News.News.security.model.CustomAuthenticationToken;
 import com.News.News.security.services.JwtService;
 import com.News.News.services.ArticleService;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -19,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +34,7 @@ public class ArticleServiceInsecureImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final AccountRepository accountRepository;
     private final ArticleMapper articleMapper;
-
+    private final EntityManager entityManager;
 
 
 //    public ArticleServiceInsecureImpl(ArticleRepository articleRepository,
@@ -69,13 +72,30 @@ public class ArticleServiceInsecureImpl implements ArticleService {
     @Override
     public List<ArticleResponse> getAllArticles() {
         return articleRepository.findAll().stream()
-                .map(article -> {
-                    String username = accountRepository.findById(article.getWriterId())
-                            .map(UserAccount::getUsername)
-                            .orElse("Unknown User");
-                    return articleMapper.toResponseDTO(article);
-                })
+                .map(articleMapper::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+
+    public List<ArticleResponse> searchArticles(String keyword) {
+//        String query = "SELECT * FROM newsapp.articles WHERE title LIKE \'%" + keyword + "%\'";
+//        System.out.println(keyword);
+//        System.out.println(query);
+//        List<Article> foundArticles = entityManager.createNativeQuery(query, Article.class).getResultList();
+
+//        List<ArticleResponse> articles = new ArrayList<>();
+//        try{
+//            articles= foundArticles.stream()
+//                    .map(articleMapper::toResponseDTO)
+//                    .collect(Collectors.toList());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//        List<Article> articles = articleRepository.searchArticles(keyword);
+//        System.out.println(articles);
+//        return articles.stream().map(articleMapper::toResponseDTO).collect(Collectors.toList());
+        return new ArrayList<>();
     }
 
     @Override

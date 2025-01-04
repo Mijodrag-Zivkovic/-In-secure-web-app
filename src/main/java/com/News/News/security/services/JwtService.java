@@ -1,13 +1,10 @@
 package com.News.News.security.services;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -57,6 +54,22 @@ public class JwtService {
 
     public String getUsernameFromToken(String token) {
         return getClaimsFromToken(token).getSubject();
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.containsKey("id") ? Long.valueOf(claims.get("id").toString()) : null;
+    }
+
+    public List<GrantedAuthority> getAuthoritiesFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        Object role = claims.get("roles"); // Extract the single role from the "roles" claim
+
+        if (role instanceof String) {
+            // Wrap the single role into a GrantedAuthority list
+            return List.of(new SimpleGrantedAuthority((String) role));
+        }
+        return new ArrayList<>(); // Return an empty list if no role is found or invalid
     }
 
 }

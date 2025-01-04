@@ -2,10 +2,12 @@ package com.News.News.controllers;
 
 import com.News.News.dtos.AccountRequest;
 import com.News.News.dtos.AccountResponse;
+import com.News.News.dtos.ArticleResponse;
 import com.News.News.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,17 +23,19 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getUserById(@PathVariable Long id) {
-        AccountResponse response = accountService.getUserById(id);
-        return ResponseEntity.ok(response);
-    }
+//    @PreAuthorize("isAuthenticated()")
+//    @GetMapping("/{id}")
+//    public ResponseEntity<AccountResponse> getUserById(@PathVariable Long id) {
+//        AccountResponse response = accountService.getUserById(id);
+//        return ResponseEntity.ok(response);
+//    }
 
-    @GetMapping("/search")
-    public ResponseEntity<AccountResponse> getUserByUsername(@RequestParam String username) {
-        AccountResponse response = accountService.getUserByUsername(username);
-        return ResponseEntity.ok(response);
-    }
+//    @PreAuthorize("isAuthenticated()")
+//    @GetMapping("/search")
+//    public ResponseEntity<AccountResponse> getUserByUsername(@RequestParam String username) {
+//        AccountResponse response = accountService.getUserByUsername(username);
+//        return ResponseEntity.ok(response);
+//    }
 
     @PostMapping
     public ResponseEntity<AccountResponse> createUser(@RequestBody @Valid AccountRequest request) {
@@ -39,24 +43,32 @@ public class AccountController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping()
     public ResponseEntity<AccountResponse> updateUser(
-            @PathVariable Long id,
             @RequestBody @Valid AccountRequest request) {
-        AccountResponse response = accountService.updateUser(id, request);
+        AccountResponse response = accountService.updateUser(request);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        accountService.deleteUser(id);
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteUser() {
+        accountService.deleteUser();
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<AccountResponse>> getAllUsers() {
-        List<AccountResponse> responseList = accountService.getAllUsers();
-        return ResponseEntity.ok(responseList);
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/search")
+    public ResponseEntity<List<AccountResponse>> searchUsers(@RequestParam String keyword) {
+        List<AccountResponse> articles = accountService.searchUser(keyword);
+        return ResponseEntity.ok(articles);
     }
+//    @PreAuthorize("isAuthenticated()")
+//    @GetMapping
+//    public ResponseEntity<List<AccountResponse>> getAllUsers() {
+//        List<AccountResponse> responseList = accountService.getAllUsers();
+//        return ResponseEntity.ok(responseList);
+//    }
 
 }

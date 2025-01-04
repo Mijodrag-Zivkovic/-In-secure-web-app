@@ -11,7 +11,8 @@ public interface AccountService {
     AccountResponse getUserById(Long id);
     AccountResponse getUserByUsername(String username);
     List<AccountResponse> getAllUsers();
-    void deleteUser(Long id);
-    AccountResponse updateUser(Long id, AccountRequest request);
+    void deleteUser();
+    AccountResponse updateUser(AccountRequest request);
+    List<AccountResponse> searchUser(String keyword);
 
 }
