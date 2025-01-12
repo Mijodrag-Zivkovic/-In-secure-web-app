@@ -27,7 +27,7 @@ public class UserAccount {
     private String username;
 
     @NotNull
-    @Size(min = 5)
+    @Size(min = 8)
     @Column(nullable = false)
     private String password;
 

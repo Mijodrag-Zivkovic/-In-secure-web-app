@@ -9,6 +9,7 @@ import com.News.News.models.UserAccount;
 import com.News.News.repositories.AccountRepository;
 import com.News.News.security.model.CustomAuthenticationToken;
 import com.News.News.services.AccountService;
+import com.News.News.utility.PasswordValidatorUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +31,13 @@ import java.util.stream.Collectors;
 public class AccountServiceSecureImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final EntityManager entityManager;
+    //private final PasswordValidatorUtil passwordValidatorUtil;
 
     @Lazy
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AccountMapper accountMapper;
+
+
 
     @Override
     public AccountResponse createUser(AccountRequest request) {
@@ -46,7 +47,11 @@ public class AccountServiceSecureImpl implements AccountService {
         if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException("Email already exists", ErrorCode.CONFLICT);
         }
-
+        String validatorResponse = PasswordValidatorUtil.validatePassword(request.getPassword());
+        if(validatorResponse != null)
+        {
+            throw new AppException(validatorResponse, ErrorCode.BAD_REQUEST);
+        }
         // Directly use the password from the request (vulnerability)
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         UserAccount user = AccountMapper.toEntity(request);
@@ -97,7 +102,11 @@ public class AccountServiceSecureImpl implements AccountService {
                 accountRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new AppException("Email already exists", ErrorCode.CONFLICT);
         }
-
+        String validatorResponse = PasswordValidatorUtil.validatePassword(request.getPassword());
+        if(validatorResponse != null)
+        {
+            throw new AppException(validatorResponse, ErrorCode.BAD_REQUEST);
+        }
         // Directly use the new password from the request (vulnerability)
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());

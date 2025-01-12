@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
             case NOT_FOUND -> status = HttpStatus.NOT_FOUND;
             case CONFLICT -> status = HttpStatus.CONFLICT;
             case FORBIDDEN -> status = HttpStatus.FORBIDDEN;
+            case BAD_REQUEST -> status = HttpStatus.BAD_REQUEST;
             default -> status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         Map<String, String> response = new HashMap<>();
