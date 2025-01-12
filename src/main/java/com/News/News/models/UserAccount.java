@@ -23,11 +23,11 @@ public class UserAccount {
     @NotNull
     @Size(min = 3, max = 50)
     @Column(nullable = false, unique = true)
-    @Check(constraints = "LENGTH(username) >= 3 AND LENGTH(username) <= 100")
+    @Check(constraints = "LENGTH(username) >= 3 AND LENGTH(username) <= 50")
     private String username;
 
     @NotNull
-    @Size(min = 8)
+    @Size(min = 5)
     @Column(nullable = false)
     private String password;
 
